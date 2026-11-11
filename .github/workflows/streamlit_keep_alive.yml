@@ -1,0 +1,23 @@
+name: Keep Streamlit App Awake
+
+on:
+  schedule:
+    # Alle 12 Stunden pingen, damit die App auf Streamlit Community Cloud
+    # nicht wegen Inaktivitaet in den Schlafmodus wechselt.
+    - cron: '0 */12 * * *'
+  workflow_dispatch: # Manuelles Ausloesen ueber die GitHub-UI
+
+jobs:
+  wake-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install streamlit-wakeup
+        run: pip install streamlit-wakeup
+
+      - name: Wake up application
+        run: streamlit-wakeup "https://kunststoffverpackungssteuer-check.streamlit.app"
