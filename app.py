@@ -165,8 +165,8 @@ def _flat(s):
 WA_BY_CODE = {r["code"]: r for r in data.WA_ROWS}
 GP_BY_CODE = {r["code"]: r for r in data.GP_ROWS}
 
-TAB_WA = 'Übersicht Außenhandelscodes „Kunststoffe und Waren daraus“'
-TAB_GP = 'Übersicht Produktionscodes „Kunststoffwaren“'
+TAB_WA = 'Übersicht Außenhandelscodes u. a. „Kunststoffe und Waren daraus“'
+TAB_GP = 'Übersicht Produktionscodes u. a. „Kunststoffwaren“'
 TAB_DOC = "Dokumentation"
 
 QUELLEN_DIR = os.path.join(os.path.dirname(__file__), "quellen")
