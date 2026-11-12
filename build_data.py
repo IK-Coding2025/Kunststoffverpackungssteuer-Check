@@ -11,7 +11,7 @@ import openpyxl
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 XLSX = os.path.join(
-    BASE, "..", "Input", "261110_Kunststoffverpackungssteuer_Code-Übersicht und Dokumentation.xlsx"
+    BASE, "..", "Input", "261110_Kunststoffverpackungssteuer_Code-Übersicht und Dokumentation_v2.xlsx"
 )
 OUT = os.path.join(BASE, "codes_data.py")
 
@@ -43,10 +43,15 @@ def main():
     hdr = [clean(c.value) for c in ws[1]]
     idx = {h: i for i, h in enumerate(hdr)}
 
-    wa_rows, gp_rows = [], []
+    wa_rows, gp_rows, skipped_ref_errors = [], [], 0
     for row in ws.iter_rows(min_row=2):
         vals = [clean(c.value) for c in row]
         if not vals[idx["Code"]]:
+            continue
+        if "#REF!" in vals[idx["Code"]]:
+            # Defekte Formelverknüpfung in der Quelldatei (z. B. durch gelöschte
+            # Zeilen) - keine gültige Datenzeile, wird übersprungen.
+            skipped_ref_errors += 1
             continue
         rec = {
             "code": vals[idx["Code"]],
@@ -174,6 +179,9 @@ def main():
 
     print(f"WA-Zeilen: {len(wa_rows)}, GP-Zeilen: {len(gp_rows)}, "
           f"Seiten: {len(pages)}, Quellen: {len(quellen)}")
+    if skipped_ref_errors:
+        print(f"Hinweis: {skipped_ref_errors} Zeile(n) mit #REF!-Fehler in der Quelldatei "
+              "übersprungen (defekte Formelverknüpfung, z. B. durch gelöschte Zeilen).")
     print(f"-> {OUT}")
 
 
